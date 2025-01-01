@@ -37,6 +37,6 @@ class Reader(bd):
 	address = Column(String)
 	phone_number = Column(String)
 	passport_number = Column(String)
-	deaprture_mark = Column(String)
+	departure_mark = Column(String)
 
 	loan = relationship("Loan", back_populates="reader")
