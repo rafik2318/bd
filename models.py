@@ -12,11 +12,11 @@ class Loan(bd):
 	return_date = Column(Date)
 	where_returned = Column(Date)
 
-	reader_id = Column(Integer, ForeignKey("books.id"))
-	book_id = Column(Integer, ForeignKey("readers.id"))
+	reader_id = Column(Integer, ForeignKey("readers.id"))
+	book_id = Column(Integer, ForeignKey("books.id"))
 
-	book = relationship("Book", back_populates = "Loan")
-	reader = relationship("Reader", back_populates = "Loan")
+	book = relationship("Book", back_populates = "loan")
+	reader = relationship("Reader", back_populates = "loan")
 
 class Book(bd):
 	__tablename__ = "books"
@@ -27,7 +27,7 @@ class Book(bd):
 	publisher = Column(String)
 	topic = Column(String)
 	
-	loan = relationship("Loan", back_populates = "Book")
+	loan = relationship("Loan", back_populates = "book")
 	
 class Reader(bd):
 	__tablename__ = "readers"
@@ -39,4 +39,4 @@ class Reader(bd):
 	passport_number = Column(String)
 	deaprture_mark = Column(String)
 
-	loan = relationship("Loan", back_populates="Reader")
+	loan = relationship("Loan", back_populates="reader")
