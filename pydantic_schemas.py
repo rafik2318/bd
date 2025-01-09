@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from datetime import Date
+from datetime import date
 from typing import Optional
 
 class BookBase(BaseModel):
@@ -9,7 +9,7 @@ class BookBase(BaseModel):
   topic: str
 
   class Config:
-    orm_mode = True
+    from_attributes = True
 
 
 class BookCreate(BookBase):

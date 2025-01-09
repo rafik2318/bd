@@ -8,12 +8,12 @@ class Loan(bd):
 	__tablename__ = "loans"	
 
 	id = Column(Integer, primary_key = True, index = True)
-	take_date = Column(Date)
-	return_date = Column(Date)
-	where_returned = Column(Date)
+	take_date = Column(Date, nullable=False)
+	return_date = Column(Date, nullable=False)
+	where_returned = Column(Date, nullable=False)
 
-	reader_id = Column(Integer, ForeignKey("readers.id"))
-	book_id = Column(Integer, ForeignKey("books.id"))
+	reader_id = Column(Integer, ForeignKey("readers.id"),nullable=False)
+	book_id = Column(Integer, ForeignKey("books.id"),nullable=False)
 
 	book = relationship("Book", back_populates = "loan")
 	reader = relationship("Reader", back_populates = "loan")
