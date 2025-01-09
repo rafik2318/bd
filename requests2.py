@@ -1,4 +1,9 @@
 from datetime import datetime, timedelta
+from typing import List, Optional
+from fastapi import Depends, HTTPException
+from sqlalchemy.orm import Session
+from models import Book, Loan, Reader
+from app import get_db 
 
 @app.get("/loans/taken-3-months-or-older", response_model=List[Loan])
 def get_loans_taken_3_months_or_older(db: Session = Depends(get_db)):
