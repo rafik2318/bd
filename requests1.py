@@ -41,21 +41,6 @@ def create_book():
     except requests.exceptions.RequestException as e:
         print(f"error {e}")
         return None
-def create_reader():
-    reader_data = {
-        "full_name": random.choice(reader_names),
-        "address": random.choice(addresses),
-        "phone_number": random.choice(phone_numbers),
-        "passport_number": random.choice(passport_numbers),
-        "departure_mark": random.choice(departure_marks)
-    }
-    response = requests.post(f"{BASE_URL}/readers/", json=reader_data)
-    if response.status_code in [200,201]:
-        print(f"Reader created: {response.json()['full_name']}")
-        return response.json()['id']
-    else:
-        print(f"Failed to create reader: {response.status_code}")
-        return None
 
 def create_reader():
     reader_data = {
@@ -85,10 +70,15 @@ def create_reader():
         print(f"error : {e}")
         return None
 def create_loan(book_id, reader_id):
+
+    if not book_id or not reader_id:
+        print("no ID")
+        return
+
     take_date = date.today() - timedelta(days=random.randint(1, 30))
     return_date = take_date + timedelta(days=random.randint(1, 14))
     where_returned = return_date + timedelta(days=random.randint(1, 5))
-
+    print("1")
     loan_data = {
         "take_date": str(take_date),
         "return_date": str(return_date),
@@ -96,10 +86,14 @@ def create_loan(book_id, reader_id):
         "book_id": book_id,
         "reader_id": reader_id
     }
-
+    print(book_id, reader_id)
+    
     try:
+        print(f"Loan data: {loan_data}")
         response = requests.post(f"{BASE_URL}/loans/", json=loan_data)
-        print(response.json())
+
+        print("Response status code:", response.status_code)
+        print("Response content:", response.text)
 
         if response.status_code in [200, 201]:
             print(f"Loan created for book ID {book_id} and reader ID {reader_id}")
@@ -107,19 +101,19 @@ def create_loan(book_id, reader_id):
             print(f"Failed to create loan: {response.status_code}, {response.text}")
 
     except requests.exceptions.RequestException as e:
-        print(f"error: {e}")
+        print(f"error443: {e}")
 
 def populate_db():
-    for _ in range(20): 
+    for _ in range(1): 
         book_id = create_book()
         if not book_id:
-            print("лоан не создался")
+            print("loan not created")
             continue
         reader_id = create_reader()
         if not reader_id:
-            print("лоан не создался")
+            print("loan not created")
             continue
-            
+        print("FFF")
         create_loan(book_id, reader_id)
 
 if __name__ == "__main__":

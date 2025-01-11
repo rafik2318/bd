@@ -109,11 +109,18 @@ def delete_reader(reader_id: int, db: Session = Depends(get_db)):
 
 @app.post("/loans/", response_model=LoanBase)
 def create_loan(loan: LoanCreate, db: Session = Depends(get_db)):
-    db_loan = Loan(**loan.dict())
-    db.add(db_loan)
-    db.commit()
-    db.refresh(db_loan)
-    return db_loan
+    db_loan  = Loan(take_date=loan.return_date,return_date = loan.return_date, where_returned=loan.where_returned, book_id=loan.book_id, reader_id=loan.reader_id)
+    
+    try:
+        db.add(db_loan)
+        db.commit()
+        db.refresh(db_loan)
+
+        return db_loan
+
+    except Exception as e:
+        db.rollback()  
+        raise HTTPException(status_code=500, detail="Failed to create loan: " + str(e))
 
 @app.get("/loans/")
 def get_all_loans(db: Session = Depends(get_db)):
@@ -140,4 +147,6 @@ def update_loan(loan_id: int, loan: LoanUpdate, db: Session = Depends(get_db)):
     if loan.where_returned:
         db_loan.where_returned = loan.where_returned
 
-    db.commit
+    db.commit()
+    db.refresh(db_loan)
+    return db_loan

@@ -3,6 +3,7 @@ from datetime import date
 from typing import Optional
 
 class BookBase(BaseModel):
+  id: Optional[int] = None
   author: str
   name: str
   publisher: str
@@ -20,9 +21,9 @@ class BookUpdate(BookBase):
   name: Optional[str] = None
   publisher: Optional[str] = None
   topic: Optional[str] = None
-
   
 class LoanBase(BaseModel):
+  id: Optional[int] = None
   take_date: date
   return_date: date
   where_returned: date
@@ -31,7 +32,8 @@ class LoanBase(BaseModel):
     orm_mode = True
 
 class LoanCreate(LoanBase):
-  pass
+  book_id: int
+  reader_id: int
 
 class LoanUpdate(LoanBase):
   take_date: Optional[date] = None
@@ -41,6 +43,7 @@ class LoanUpdate(LoanBase):
   
 
 class ReaderBase(BaseModel):
+  id: Optional[int] = None
   full_name: str
   address: str
   phone_number: str
