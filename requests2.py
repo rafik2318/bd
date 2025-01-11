@@ -1,26 +1,29 @@
 from datetime import datetime, timedelta
 from typing import List, Optional
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, FastAPI
 from sqlalchemy.orm import Session
 from models import Book, Loan, Reader
-from app import get_db 
+from app import get_db
+from pydantic_schemas import BookBase, LoanBase, ReaderBase, BookCreate, BookUpdate, ReaderCreate, ReaderUpdate, LoanCreate, LoanUpdate 
 
-@app.get("/loans/taken-3-months-or-older", response_model=List[Loan])
+app = FastAPI()
+
+@app.get("/loans/taken-1-day-or-older", response_model=List[LoanBase])
 def get_loans_taken_3_months_or_older(db: Session = Depends(get_db)):
-    three_months_ago = datetime.today() - timedelta(days=90) 
+    three_months_ago = datetime.today() - timedelta(days=1) 
     loans = db.query(Loan).filter(Loan.take_date <= three_months_ago.date()).all()
     if not loans:
-        raise HTTPException(status_code=404, detail="No loans found taken 3 months ago or older")
+        raise HTTPException(status_code=404, detail="No loans found 1 day ago or older")
     return loans
 
-@app.get("/books/by-author/{author_name}", response_model=List[Book])
+@app.get("/books/by-author/{author_name}", response_model=List[BookBase])
 def get_books_by_author(author_name: str, db: Session = Depends(get_db)):
     books = db.query(Book).filter(Book.author == author_name).all()
     if not books:
         raise HTTPException(status_code=404, detail=f"No books found for author '{author_name}'")
     return books
 
-@app.get("/loans/reader/{reader_id}", response_model=List[Loan])
+@app.get("/loans/reader/{reader_id}", response_model=List[LoanBase])
 def get_loans_by_reader(reader_id: int, db: Session = Depends(get_db)):
     loans = (
         db.query(Loan)
@@ -60,7 +63,7 @@ def get_books_grouped_by_author(db: Session = Depends(get_db)):
     return [{"author": author, "book_count": book_count} for author, book_count in grouped_books]
 
 
-@app.get("/readers/", response_model=List[Reader])
+@app.get("/readers/", response_model=List[ReaderBase])
 def get_readers(sort_by: Optional[str] = None, db: Session = Depends(get_db)):
     query = db.query(Reader)
     if sort_by == "name":
@@ -73,7 +76,7 @@ def get_readers(sort_by: Optional[str] = None, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="No readers found")
     return readers
 
-@app.get("/books/order-by-name-asc", response_model=List[Book])
+@app.get("/books/order-by-name-asc", response_model=List[BookBase])
 def get_books_ordered_by_name_asc(db: Session = Depends(get_db)):
     books = db.query(Book).order_by(Book.name.asc()).all()
 

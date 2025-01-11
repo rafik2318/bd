@@ -3,8 +3,10 @@ from sqlalchemy.orm import Session
 from models import Book, Reader, Loan
 from pydantic_schemas import BookBase, LoanBase, ReaderBase, BookCreate, BookUpdate, ReaderCreate, ReaderUpdate, LoanCreate, LoanUpdate
 from app import get_db, create_tables
+from requests2 import *
 
-app = FastAPI()
+
+app = app
 
 @app.on_event("startup")
 def startup():
