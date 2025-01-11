@@ -112,10 +112,15 @@ def create_loan(book_id, reader_id):
 def populate_db():
     for _ in range(20): 
         book_id = create_book()
+        if not book_id:
+            print("лоан не создался")
+            continue
         reader_id = create_reader()
-        
-        if book_id and reader_id:
-            create_loan(book_id, reader_id)
+        if not reader_id:
+            print("лоан не создался")
+            continue
+            
+        create_loan(book_id, reader_id)
 
 if __name__ == "__main__":
     populate_db()
