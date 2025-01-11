@@ -78,7 +78,6 @@ def create_loan(book_id, reader_id):
     take_date = date.today() - timedelta(days=random.randint(1, 30))
     return_date = take_date + timedelta(days=random.randint(1, 14))
     where_returned = return_date + timedelta(days=random.randint(1, 5))
-    print("1")
     loan_data = {
         "take_date": str(take_date),
         "return_date": str(return_date),
@@ -101,10 +100,10 @@ def create_loan(book_id, reader_id):
             print(f"Failed to create loan: {response.status_code}, {response.text}")
 
     except requests.exceptions.RequestException as e:
-        print(f"error443: {e}")
+        print(f"error: {e}")
 
 def populate_db():
-    for _ in range(1): 
+    for _ in range(5): 
         book_id = create_book()
         if not book_id:
             print("loan not created")
@@ -113,7 +112,6 @@ def populate_db():
         if not reader_id:
             print("loan not created")
             continue
-        print("FFF")
         create_loan(book_id, reader_id)
 
 if __name__ == "__main__":
